@@ -15,6 +15,7 @@ win = {
 }
 
 # Create a dictionary to define the ways to win
+# Use lines from BBT
 def pick_winner(user_pick, computer_pick):
     defeats = win[user_pick]
     if user_pick == computer_pick:
