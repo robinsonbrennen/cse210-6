@@ -1,59 +1,49 @@
 import random
+from enum import IntEnum
 
-user_wins = 0
-computer_wins = 0
-tie_game = 0
+class Input(IntEnum):
+    Rock = 0
+    Paper = 1
+    Scissors = 2
+    Lizard = 3
+    Spock = 4
 
-options = ["rock", "paper", "scissors", "lizard", "spock"]
+win = {
+    Input.Scissors: [Input.Lizard, Input.Paper], Input.Paper: [Input.Spock, Input.Rock], Input.Rock: [Input.Lizard, Input.Scissors], Input.Lizard: [Input.Spock, Input.Paper], Input.Spock: [Input.Scissors, Input.Rock]
+}
+
+def pick_winner(user_pick, computer_pick):
+    defeats = win[user_pick]
+    if user_pick == computer_pick:
+        print(f"Both players selected {user_pick.name}. It's a tie!")
+    elif computer_pick in defeats:
+        print(f"{user_pick.name} beats {computer_pick.name}! You win!")
+    else:
+        print(f"{computer_pick.name} beats {user_pick.name}! You lose.")
+
+def computer_input():
+    selection = random.randint(0, len(Input) - 1)
+    action = Input(selection)
+    return action
+
+def user_input():
+    choices = [f"{action.name}[{action.value}]" for action in Input]
+    choices_str = ", ".join(choices)
+    selection = int(input(f"Enter a choice ({choices_str}): "))
+    action = Input(selection)
+    return action
 
 while True:
-    user_input = input("Type Rock/Paper/Scissors/Lizard/Spock or Q to quit: ").lower()
-    if user_input == "q":
-        break
-
-    if user_input not in options:
+    try:
+        user_pick = user_input()
+    except ValueError as e:
+        range_str = f"[0, {len(Input) - 1}]"
+        print(f"Incorrect input. Enter {range_str}")
         continue
 
-    random_number = random.randint(0, 4)
-    # rock = 0 paper = 1 scissors = 2 lizard = 3 spock = 4
-    computer_pick = options[random_number]
-    print("Computer picked", computer_pick + ".")
+    computer_pick = computer_input()
+    pick_winner(user_pick, computer_pick)
 
-    # Win if rock crushes scissors, rock crushes lizard
-    # Lose if spock vaporizes rock, paper covers rock 
-    if user_input == "rock" and computer_pick == "scissors" and computer_pick == "lizard":
-        print("You won!")
-        user_wins += 1
-
-    # Win if paper covers rock, paper disproves spock
-    # Lose if scissors cuts paper, lizard eats paper
-    elif user_input == "paper" and computer_pick == "rock" and computer_pick == "spock":
-        print("You won!")
-        user_wins += 1
-
-    # Win if scissors cuts paper, scissors decapitates lizard
-    # Lose if spock smashes scissors, rock smashes scissors
-    elif user_input == "scissors" and computer_pick == "paper" and computer_pick == "lizard":
-        print("You won!")
-        user_wins += 1
-
-    # Win if lizard eats paper, lizard poisons spock
-    # Lose if rock crushes lizard, scissors decapitates lizard
-    elif user_input == "lizard" and computer_pick == "spock" and computer_pick == "paper":
-        print("You won!")
-        user_wins += 1
-
-    # Win if spock smashes scissors, spock vaporizes rock
-    # Lose if paper disproves spock, lizard poisons spock
-    elif user_input == "spock" and computer_pick == "scissors" and computer_pick == "rock":
-        print("You won!")
-        user_wins += 1
-    
-    else:
-        print("You lost!")
-        computer_wins += 1
-
-print("You won", user_wins, "times.")
-print("The computer won", computer_wins, "times.")
-print("You tied", tie_game, "times.")
-print("Goodbye!")
+    play_again = input("Play again? (y/n): ")
+    if play_again.lower() != "y":
+        break
