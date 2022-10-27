@@ -27,16 +27,16 @@ def pick_winner(user_pick, computer_pick):
 # Get input from the computer at random
 def computer_input():
     selection = random.randint(0, len(Input) - 1)
-    action = Input(selection)
-    return action
+    pick = Input(selection)
+    return pick
 
 # Get input from user
 def user_input():
-    choices = [f"{action.name}[{action.value}]" for action in Input]
+    choices = [f"{pick.name}[{pick.value}]" for pick in Input]
     choices_str = ", ".join(choices)
     selection = int(input(f"Enter a choice ({choices_str}): "))
-    action = Input(selection)
-    return action
+    pick = Input(selection)
+    return pick
 
 # While loop to direct the game, check for valid input, and ask user if they want to play again
 while True:
